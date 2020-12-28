@@ -6,19 +6,66 @@ services:
     container_name: adminurl-postgres
     expose:
       - 5432
-  blockchain:
-    image: trufflesuite/ganache-cli:latest
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: adminurls
+      POSTGRES_USER: admin
     ports:
-      - ${RPC_PORT:-8545}:8545
-    container_name: adminurl-blkchain
+      - ${DB_PORT:-5432}:5432
   adminurl:
     build:
       context: .
       dockerfile: Dockerfile
     image: adminurl:dev
     container_name: adminurl
-    command: python main.py
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
-    - 80:80
+    - 8000:8000
     volumes:
     - .:/opt/project
+    env_file:
+      - .env
+    depends_on:
+      - migrations
+  makemigrations:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - db
+    volumes:
+      - .:/opt/project
+    image: adminurl:dev
+    container_name: adminurl-makemigrations
+    command: python manage.py makemigrations --noinput
+    env_file:
+      - .env
+    links:
+      - db
+  migrations:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - makemigrations
+    image: adminurl:dev
+    container_name: adminurl-migrations
+    command: python manage.py migrate --noinput
+    volumes:
+      - .:/opt/project
+    env_file:
+      - .env
+    links:
+      - db
+  superuser:
+    depends_on:
+      - migrations
+    image: adminurl:dev
+    container_name: adminurl-superuser
+    command: python manage.py loaddata superuser
+    volumes:
+      - .:/opt/project
+    env_file:
+      - .env
+    links:
+      - db

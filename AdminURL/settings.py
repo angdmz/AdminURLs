@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xg)61agv2%m@mjet@#-m6+ub+)y@xk#(#v9k62z52%y6_p9_t@'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.getenv('DEBUG', "false") == "true" else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+# Fixture for dev!
+FIXTURE_DIRS = ['AdminURL/fixtures/']
 
 # Application definition
 
@@ -37,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'drf_yasg',
+    'logic',
+    'urls',
+    'rest'
 ]
 
 MIDDLEWARE = [
@@ -75,11 +82,14 @@ WSGI_APPLICATION = 'AdminURL.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER':  os.getenv('DATABASE_USER'),
+        'PASSWORD':  os.getenv('DATABASE_PASSWORD'),
+        'HOST':  os.getenv('DATABASE_HOST'),
+        'PORT':  os.getenv('DATABASE_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

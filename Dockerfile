@@ -1,7 +1,7 @@
 FROM python:3.8-alpine
 
 RUN apk update \
-    && apk add build-base
+    && apk add build-base postgresql postgresql-dev libpq
 
 RUN mkdir -p /opt/project
 WORKDIR /opt/project

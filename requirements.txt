@@ -1,1 +1,8 @@
-django
+Django
+django-bootstrap3
+django-jquery
+djangorestframework
+psycopg2==2.8.4
+psycopg2-binary==2.8.4
+drf-yasg
+django-filter
