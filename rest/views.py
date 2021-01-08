@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 
 from logic.models import Manager as ManagerModel
-from rest.serializers import ManagerCreation as ManagerCreationSerializer, Project as ProjectSerializer, ProjectCreation as ProjectCreationSerializer
+from rest.serializers import ManagerCreation as ManagerCreationSerializer, ProjectListing as ProjectListingSerializer, ProjectCreation as ProjectCreationSerializer
 from rest.serializers import ManagerListing as ManagerListingSerializer
 from rest.serializers import ManagerRetrieval as ManagerRetrievalSerializer
 from urls.models import Project as ProjectModel
@@ -18,7 +18,7 @@ class GetSerializerClassMixin(object):
 
     def get_serializer_class(self):
         """
-        A class which inhertis this mixins should have variable
+        A class which inherits this mixins should have variable
         `serializer_action_classes`.
         Look for serializer class in self.serializer_action_classes, which
         should be a dict mapping action name (key) to serializer class (value),
@@ -55,6 +55,9 @@ class Project(GetSerializerClassMixin, viewsets.ModelViewSet):
     queryset = ProjectModel.objects.select_related('project', 'project__manager', 'project__manager__user').all()
     filter_backends = [DjangoFilterBackend]
     serializer_action_classes = {
-        'list': ProjectSerializer,
-        'create': ProjectCreationSerializer
+        'list': ProjectListingSerializer,
+        'create': ProjectCreationSerializer,
+        'retrieve': ProjectListingSerializer
     }
+    lookup_field = 'public_id'
+

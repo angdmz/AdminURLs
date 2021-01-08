@@ -7,10 +7,10 @@ from logic.models import Project as EthereumProject
 
 
 class Project(models.Model):
-    project = models.ForeignKey(EthereumProject, on_delete=models.CASCADE, related_name='details')
+    project = models.ForeignKey(EthereumProject, on_delete=models.CASCADE, related_name='details', related_query_name='details')
     public_id = models.UUIDField()
-    max_requests_per_month = models.IntegerField(null=True, blank=True, default=None)
-    max_requests_per_second = models.IntegerField(null=True, blank=True, default=None)
+    max_requests_per_month = models.PositiveIntegerField(null=True, blank=True, default=None)
+    max_requests_per_second = models.PositiveIntegerField(null=True, blank=True, default=None)
 
     def __str__(self):
         return f"{self.public_id}"
