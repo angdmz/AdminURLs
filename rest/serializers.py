@@ -37,7 +37,7 @@ class Project(serializers.ModelSerializer):
 
 
 class ManagerCreation(serializers.ModelSerializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=all_user_queryset)
+    user_id = serializers.PrimaryKeyRelatedField(queryset=all_user_queryset, source='user')
 
     class Meta:
         model = ManagerModel
